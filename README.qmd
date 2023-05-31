@@ -1,0 +1,110 @@
+# Karl Berator Gene Expression Project 2023
+
+## Summary of Project 
+This project focuses on investigating the effect the concentration of growth factor has on the gene expression of a cell sample that has been given a treatment.
+
+The experiment involved two cell types (wild and 101), two growth factors (Factor 42 and saline (control)) and eight different gene lines (four for each cell type). 
+
+
+The deliverables include:
+
+- a PowerPoint presentation exploring the effect of treatment on the effect of growth factor on gene expression for the March data 
+
+- a conference figure showing side by side plots of gene expression vs concentration for each cell type for the March data 
+
+- a sample size calculation for a further experiment focused on creating a MLR 
+
+- an IMMRAD report creating a mixed effect model for the March data. 
+
+The project spanned from March to May 2023. 
+
+## Data and Data Cleaning
+### Data 
+The data was provided by Karl via email on 1/3/23. It was provided in a multipage excel spreadsheet (Karl_data_spreadsheet_2023-3-1, located in raw data) which was collected manually into a single spreadsheet (Karl_data_2023_3_1, located in the raw data). The data has the following variables: 
+
+Gene Expression: The gene expression of the cell samples after 50mg treatment and the given concentration of growth factor were added.
+
+Concentration: The concentration of growth factor added to the cell sample in mg/ml.
+
+Growth Factor: The type of growth factor added, has two levels Factor 42 and Saline (Placebo).
+
+Cell line: The type of cell in the cell sample, has two levels Wild and 101. 
+
+Gene line: The gene line of the cell type, has eight levels. 
+
+### Cleaning
+
+This data has one observation with a missing gene expression value (denoted by -99) this observation was removed to get a clean dataset. This was performed using the 01_cleaning_data code. 
+
+
+
+## Powerpoint Presentation 
+### Overview of presentation 
+The powerpoint presentation was requested by Karl vai email on 1/3/23. It explored the effect of treatment on the effect of growth factor on gene expression and contained: 
+
+- a plot of gene expression vs concentration for both cell lines with a linear line of best fit and points coloured by treatment 
+- a table containing the sample mean of each cell line for each concentration and treatment
+- a table containing the sample standard deviation of each cell line for each concentration and treatment
+- analysis of the importance of the concentration and treatment interaction terms in a multiple linear regression (MLR) of gene expression with concentration, treatment and cell line as predictors  
+
+### Plots and tables 
+The figures and tables were created using the 03_powerpoint_figs_and_tabs code. The plots were created using ggplot and the tables using gt. The plots are stored in the Figures folder and the tables the Tables folder
+
+
+### MLR 
+The MLR was fit with dependent variable log(gene_expression) and predictor variables concentration, treatment, cell line and concentration$^2$. 
+
+The MLR was found using stepwise selection based on AIC with third order interaction terms. 
+
+The importance of the terms containing treatment and concentration was then evaluated using an anova analysis. 
+
+The MLR was created using 02_MLR_March_data code which contains more details about the model selection process.
+
+
+### The powerpoint 
+The powerpoint is not included for size reasons but comprised off 
+
+slide 1: "Effect of treatment on the effect of growth factor on Gene Expression"
+
+2: wild_cell_2023-3-1.jpg (Figures folder)
+
+3: 101_cell_2023-3-1.jpg (Figures folder)
+
+4: sample_mean_tab_2023-3-1.png (Tables folder)
+
+5: sample_sd_tab_2023-3-1.png (Tables folder)
+
+6: "The effect of treatment on the effect of growth factor concentration on gene expression was investigated by fitting a linear regression model. It was found that the type of treatment had a statistically significant effect (p<0.05) on the effect of growth factor concentration on gene expression. It was also found that the cell type has a statistically significant effect (p<0.05) on the effect a treatment has on the effect of growth factor concentration on gene expression. 
+The factor 42 treatment had a negative effect on the effect of growth factor concentration on gene expression for the 101 cell type. For the same increase in growth factor concentration, the percentage increase in gene expression will be lower for 101 cells treated with factor 42 than those treated with saline. 
+The factor 42 treatment had a positive effect on the effect of growth factor on gene expression for the wild cell type. For the same increase in growth factor concentration, the percentage increase in gene expression will be higher for wild cells treated with factor 42 than those treated with saline. 
+The percentage increase in gene expression when growth factor concentration is increased depends on the initial concentration of growth factor. The rate of growth increases as the initial growth factor concentration increases." 
+
+
+## Conference Figure 
+Karl requested an updated plot for a conference via email on 3/4/23. The original plot is located in the resources folder and is called figure_to_recreate.pdf. 
+
+The updated plot was created using the 04_conference_fig code, is called conference_plot_2023-4-3.tiff and is located in the Figures folder. The figure was created using ggplot. 
+
+
+## Sample Size Calculation 
+Karl requested a sample size calculation for a further experiment via email on 1/5/23. 
+
+The experiment aimed to create a multiple linear regression of gene expression with predictors concentration, cell age, treatment (two levels), cell type (two levels), and media (two levels). All predictors were of interest in the study and the model had no interaction terms. 
+
+The $R^2$ value of the entire MLR model was found to be 0.1 in a previous study. 
+
+Karl required the sample size such that the model has a power of 0.9 with significance level of 0.05. 
+ 
+The sample size was calculated using the approach outlined in chapter 9 of the second edition of statistical power analysis for the behavioral sciences by Jacob Cohen (Cohen 1988). A copy is available at https://www.utstat.toronto.edu/~brunner/oldclass/378f16/readings/CohenPower.pdf. 
+
+The sample size calculation was performed using the 05_sample_size_cal code using the pwr package. 
+
+## IMRAD Report 
+Karl requested an IMRAD report focused on creating a predictive model of gene expression via email on 8/5/23. 
+
+The resulting report is contained in the IMRAD report folder and contains all code used in the analysis. 
+
+The report finds that the best predictive model is a random slope and intercept model. The model has log(gene_expression) as the dependent variable and treatment, concentration, concentration$^2$ and cell type as fixed effects and gene line as a random effect. The model had a $R^2$ of 0.94. 
+
+
+

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>readme</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="README_files/libs/clipboard/clipboard.min.js"></script>
+<script src="README_files/libs/quarto-html/quarto.js"></script>
+<script src="README_files/libs/quarto-html/popper.min.js"></script>
+<script src="README_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="README_files/libs/quarto-html/anchor.min.js"></script>
+<link href="README_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="README_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="README_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="README_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="karl-berator-gene-expression-project-2023" class="level1">
+<h1>Karl Berator Gene Expression Project 2023</h1>
+<section id="summary-of-project" class="level2">
+<h2 class="anchored" data-anchor-id="summary-of-project">Summary of Project</h2>
+<p>This project focuses on investigating the effect the concentration of growth factor has on the gene expression of a cell sample that has been given a treatment.</p>
+<p>The experiment involved two cell types (wild and 101), two growth factors (Factor 42 and saline (control)) and eight different gene lines (four for each cell type).</p>
+<p>The deliverables include:</p>
+<ul>
+<li><p>a PowerPoint presentation exploring the effect of treatment on the effect of growth factor on gene expression for the March data</p></li>
+<li><p>a conference figure showing side by side plots of gene expression vs concentration for each cell type for the March data</p></li>
+<li><p>a sample size calculation for a further experiment focused on creating a MLR</p></li>
+<li><p>an IMMRAD report creating a mixed effect model for the March data.</p></li>
+</ul>
+<p>The project spanned from March to May 2023.</p>
+</section>
+<section id="data-and-data-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="data-and-data-cleaning">Data and Data Cleaning</h2>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p>The data was provided by Karl via email on 1/3/23. It was provided in a multipage excel spreadsheet (Karl_data_spreadsheet_2023-3-1, located in raw data) which was collected manually into a single spreadsheet (Karl_data_2023_3_1, located in the raw data). The data has the following variables:</p>
+<p>Gene Expression: The gene expression of the cell samples after 50mg treatment and the given concentration of growth factor were added.</p>
+<p>Concentration: The concentration of growth factor added to the cell sample in mg/ml.</p>
+<p>Growth Factor: The type of growth factor added, has two levels Factor 42 and Saline (Placebo).</p>
+<p>Cell line: The type of cell in the cell sample, has two levels Wild and 101.</p>
+<p>Gene line: The gene line of the cell type, has eight levels.</p>
+</section>
+<section id="cleaning" class="level3">
+<h3 class="anchored" data-anchor-id="cleaning">Cleaning</h3>
+<p>This data has one observation with a missing gene expression value (denoted by -99) this observation was removed to get a clean dataset. This was performed using the 01_cleaning_data code.</p>
+</section>
+</section>
+<section id="powerpoint-presentation" class="level2">
+<h2 class="anchored" data-anchor-id="powerpoint-presentation">Powerpoint Presentation</h2>
+<section id="overview-of-presentation" class="level3">
+<h3 class="anchored" data-anchor-id="overview-of-presentation">Overview of presentation</h3>
+<p>The powerpoint presentation was requested by Karl vai email on 1/3/23. It explored the effect of treatment on the effect of growth factor on gene expression and contained:</p>
+<ul>
+<li>a plot of gene expression vs concentration for both cell lines with a linear line of best fit and points coloured by treatment</li>
+<li>a table containing the sample mean of each cell line for each concentration and treatment</li>
+<li>a table containing the sample standard deviation of each cell line for each concentration and treatment</li>
+<li>analysis of the importance of the concentration and treatment interaction terms in a multiple linear regression (MLR) of gene expression with concentration, treatment and cell line as predictors</li>
+</ul>
+</section>
+<section id="plots-and-tables" class="level3">
+<h3 class="anchored" data-anchor-id="plots-and-tables">Plots and tables</h3>
+<p>The figures and tables were created using the 03_powerpoint_figs_and_tabs code. The plots were created using ggplot and the tables using gt. The plots are stored in the Figures folder and the tables the Tables folder</p>
+</section>
+<section id="mlr" class="level3">
+<h3 class="anchored" data-anchor-id="mlr">MLR</h3>
+<p>The MLR was fit with dependent variable log(gene_expression) and predictor variables concentration, treatment, cell line and concentration<span class="math inline">\(^2\)</span>.</p>
+<p>The MLR was found using stepwise selection based on AIC with third order interaction terms.</p>
+<p>The importance of the terms containing treatment and concentration was then evaluated using an anova analysis.</p>
+<p>The MLR was created using 02_MLR_March_data code which contains more details about the model selection process.</p>
+</section>
+<section id="the-powerpoint" class="level3">
+<h3 class="anchored" data-anchor-id="the-powerpoint">The powerpoint</h3>
+<p>The powerpoint is not included for size reasons but comprised off</p>
+<p>slide 1: “Effect of treatment on the effect of growth factor on Gene Expression”</p>
+<p>2: wild_cell_2023-3-1.jpg (Figures folder)</p>
+<p>3: 101_cell_2023-3-1.jpg (Figures folder)</p>
+<p>4: sample_mean_tab_2023-3-1.png (Tables folder)</p>
+<p>5: sample_sd_tab_2023-3-1.png (Tables folder)</p>
+<p>6: “The effect of treatment on the effect of growth factor concentration on gene expression was investigated by fitting a linear regression model. It was found that the type of treatment had a statistically significant effect (p&lt;0.05) on the effect of growth factor concentration on gene expression. It was also found that the cell type has a statistically significant effect (p&lt;0.05) on the effect a treatment has on the effect of growth factor concentration on gene expression. The factor 42 treatment had a negative effect on the effect of growth factor concentration on gene expression for the 101 cell type. For the same increase in growth factor concentration, the percentage increase in gene expression will be lower for 101 cells treated with factor 42 than those treated with saline. The factor 42 treatment had a positive effect on the effect of growth factor on gene expression for the wild cell type. For the same increase in growth factor concentration, the percentage increase in gene expression will be higher for wild cells treated with factor 42 than those treated with saline. The percentage increase in gene expression when growth factor concentration is increased depends on the initial concentration of growth factor. The rate of growth increases as the initial growth factor concentration increases.”</p>
+</section>
+</section>
+<section id="conference-figure" class="level2">
+<h2 class="anchored" data-anchor-id="conference-figure">Conference Figure</h2>
+<p>Karl requested an updated plot for a conference via email on 3/4/23. The original plot is located in the resources folder and is called figure_to_recreate.pdf.</p>
+<p>The updated plot was created using the 04_conference_fig code, is called conference_plot_2023-4-3.tiff and is located in the Figures folder. The figure was created using ggplot.</p>
+</section>
+<section id="sample-size-calculation" class="level2">
+<h2 class="anchored" data-anchor-id="sample-size-calculation">Sample Size Calculation</h2>
+<p>Karl requested a sample size calculation for a further experiment via email on 1/5/23.</p>
+<p>The experiment aimed to create a multiple linear regression of gene expression with predictors concentration, cell age, treatment (two levels), cell type (two levels), and media (two levels). All predictors were of interest in the study and the model had no interaction terms.</p>
+<p>The <span class="math inline">\(R^2\)</span> value of the entire MLR model was found to be 0.1 in a previous study.</p>
+<p>Karl required the sample size such that the model has a power of 0.9 with significance level of 0.05.</p>
+<p>The sample size was calculated using the approach outlined in chapter 9 of the second edition of statistical power analysis for the behavioral sciences by Jacob Cohen (Cohen 1988). A copy is available at https://www.utstat.toronto.edu/~brunner/oldclass/378f16/readings/CohenPower.pdf.</p>
+<p>The sample size calculation was performed using the 05_sample_size_cal code using the pwr package.</p>
+</section>
+<section id="imrad-report" class="level2">
+<h2 class="anchored" data-anchor-id="imrad-report">IMRAD Report</h2>
+<p>Karl requested an IMRAD report focused on creating a predictive model of gene expression via email on 8/5/23.</p>
+<p>The resulting report is contained in the IMRAD report folder and contains all code used in the analysis.</p>
+<p>The report finds that the best predictive model is a random slope and intercept model. The model has log(gene_expression) as the dependent variable and treatment, concentration, concentration<span class="math inline">\(^2\)</span> and cell type as fixed effects and gene line as a random effect. The model had a <span class="math inline">\(R^2\)</span> of 0.94.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

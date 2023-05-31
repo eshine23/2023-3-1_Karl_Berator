@@ -1,0 +1,243 @@
+---
+title: "Gene Expression Analysis"
+author: "Elizabeth Shine: a1801401"
+format: html
+execute: 
+  warning: false
+  message: false
+  echo: false
+bibliography: gene.bib
+---
+
+# Introduction
+The Gene Expression dataset contains the gene expression of cell samples after a treatment and growth factor was added. The dataset was provided by Dr Karl Berator. The key variables in the dataset were: 
+
+Gene Expression: The gene expression of the cell samples after 40mg treatment and the given concentration of growth factor were added.
+
+Concentration: The concentration of growth factor added to the cell sample in mg/ml.
+
+Growth Factor: The type of growth factor added, had two levels Factor 42 and Saline (Placebo).
+
+Cell line: The type of cell in the cell sample, had two levels Wild and 101. 
+
+Gene line: The gene line of the cell type, had eight levels. 
+
+
+The aim of this report is to create predictive model of gene expression given cell line, concentration and growth factor.  
+
+# Methods
+The data was analysed in R [@R] using R studio [@Rstu] and the lme [@lme] and tidyverse packages [@tidyverse]. 
+
+The data was first cleaned by removing an observation which had missing gene expression data. 
+
+Then a generalized least squares regression model weighted by gene line with third order interaction terms was fitted to the dataset. The model had gene expression as the dependent variable and cell line, concentration and growth factor as predictor variables. 
+
+A log transformation was applied to gene expression and a concentration squared term added to ensure the model fulfilled the assumptions of linear regression. 
+
+As each observation for a single gene-line was conducted in a single test-tube, the observations are correlated and thus to ensure the assumptions of linear regression hold, mixed effect models were fitted to the data. Two models were fitted a random intercept model and a random intercept and slope model. The models had gene expression as the dependent variable, all previous predictors as fixed effects and gene line as a random effect and were weighted by gene line.
+
+The most suitable model was then chosen using anova. 
+
+# Results 
+```{r}
+pacman::p_load(readxl,dplyr,tidyverse,nlme,gt,rsq)
+options(scipen=999)
+options('digits'=4)
+
+# find linear model 
+#load in data
+#load in clean data ----
+karl_data <- read.csv(here::here("data/Karl_data_clean_2023-3-1.csv")) %>%
+  mutate(across(where(is.character), factor))
+
+# choose best linear regression model using step wise selection
+#start with null model
+null <- lm(log(gene_expression) ~ 1, data = karl_data)
+lm_log_con2 <- step(null, scope = log(gene_expression) ~ (concentration + treatment + cell_line+I(concentration^2))^3 , direction = "both",trace=0)
+
+#test assumptions
+#all looks good
+plot <- gglm::gglm(lm_log_con2)
+
+
+## check res vs each predictor
+
+#get student res for each obs
+log_con2_res <-
+  broom::augment(lm_log_con2) %>%
+  #adds studentized residuals
+  add_column(pear_res = residuals(lm_log_con2, type = "pearson"),trial = karl_data$trial) 
+
+
+
+#check res vs fitted for catergorial
+#looks good
+ plot <- log_con2_res %>%
+  dplyr::select(where(is.factor), pear_res) %>%
+  pivot_longer(-pear_res) %>%
+  ggplot(aes(value, pear_res)) +
+  geom_boxplot() +
+  facet_wrap(~name, scale = "free")
+
+
+#check res for concentration
+#looks good
+plot <-log_con2_res %>%
+  ggplot(aes(concentration, pear_res)) +
+  geom_point() + geom_smooth()
+
+```
+
+
+
+
+
+```{r}
+# fit GLS models and mixed models 
+
+#allow for different variances between gene_lines
+wei <- varIdent(form= ~ 1 | gene_line)
+
+fixed <-  gls(log(gene_expression) ~ treatment + concentration + cell_line +
+                   I(concentration^2) + treatment:cell_line + concentration:cell_line +
+                   treatment:concentration + treatment:concentration:cell_line, method ="REML",data = karl_data,weights=wei)
+
+# random intercept model
+intercept <- lme(log(gene_expression) ~ treatment + concentration + cell_line +
+                    I(concentration^2) + treatment:cell_line + concentration:cell_line +
+                    treatment:concentration + treatment:concentration:cell_line, random=~1|gene_line ,method="REML",data=karl_data,weight=wei)
+
+# random intercept and slope model
+
+slope <- lme(log(gene_expression) ~ treatment + concentration + cell_line +
+               I(concentration^2) + treatment:cell_line + concentration:cell_line +
+               treatment:concentration + treatment:concentration:cell_line, random=~1+concentration|gene_line, method="REML", data=karl_data,weight=wei)
+
+# find best model
+# best model is slope
+ anova <- anova(slope,intercept,fixed)
+
+#check all terms in model are relavent
+# as 3 way interaction term is sig we keep all terms
+anova <- anova(slope)
+
+
+# res vs fitted
+# looks good
+plot <- plot(slope, type=c("p","smooth"), col.line=1)
+
+#qqplot
+# bit bad at ends but good enough
+plot <- qqnorm(slope,abline=c(0,1))
+
+#scale location
+#good enough
+plot <- plot(slope,
+     sqrt(abs(resid(.)))~fitted(.),
+     type=c("p","smooth"), col.line=1)
+
+
+
+## check res vs each predictor
+#get student res for each obs
+res <-
+  broom::augment(slope) %>%
+  #adds studentized residuals
+  add_column(pear_res = residuals(intercept, type = "pearson"))
+
+
+#check res vs fitted for catergorial
+#looks good
+plot <- res %>%
+  dplyr::select(where(is.factor), pear_res) %>%
+  pivot_longer(-pear_res) %>%
+  ggplot(aes(value, pear_res)) +
+  geom_boxplot() +
+  facet_wrap(~name, scale = "free")
+
+
+#check res for concentration
+#looks good
+plot <- res %>%
+  ggplot(aes(concentration, pear_res)) +
+  geom_point() + geom_smooth()
+
+
+# calculate r^2 
+r_sqr <- rsq.lmm(slope)
+
+
+# create anova table for report 
+k <- anova(slope,intercept,fixed)
+k<-tibble(k)
+k <- k |> select(-1)
+
+k_2 <- anova(slope)
+k_2_table <- tibble(k_2)
+k_2_table <- cbind(term=rownames(k_2),k_2_table)
+
+```
+
+The table below gives the output of the anova model comparision. The slope model best explains the data and thus is the chosen model. 
+```{r}
+#| label: anova
+
+    k |>
+  gt(caption="A table containing the ANOVA compairsion of the three models. The random intercept and slope model is the selected model. The BIC of the random interept model is smaller.")|>
+  tab_header(
+    title ="ANOVA comparision of the three models" )
+
+```
+
+
+The significance of each term in the model is shown by the table below. As the interaction term is significant the model can not be simplified any further. 
+
+```{r}
+ k_2_table |>
+  gt(caption="A table containing the ANOVA compairsion of the random intercept and slope model. As the three way interaction term is signficant all terms must be included in the model.")|>
+  tab_header(
+    title ="ANOVA comparision of the randon slope and intercept model" )
+
+```
+
+
+The coefficients of the random slope and intercept model are shown by the table below. 
+
+```{r}
+coefficent <- slope$coefficients[[1]]
+coefficient <- data.frame(coefficent)
+
+
+co_table <- tibble(term= rownames(coefficient),coefficient = coefficient$coefficent)
+
+co_table |>
+  gt(caption="The coeffcients for each fixed term in the selected slope and intercept model.")|>
+  tab_header(
+    title ="The coefficients of the fixed terms in slope and intercept model" )
+
+```
+
+The observed r-square value for the entire random slope and intercept model was 0.94. 
+
+
+# Discussion
+We have found a suitable model to model the effect of cell type, growth factor and concentration of growth factor on gene expression. The model suggests that factor 42 is effective at increasing gene expression. The effectiveness of the growth factor depends on its concentration and the cell sample type. 
+
+The final model has a relatively good r-squared value of 0.94 which suggests that differences in gene expression are well explained by cell type, cell line, growth factor and concentration. 
+
+
+# Code used to complete analysis
+```{r ref.label=knitr::all_labels()}
+#| echo: true
+#| eval: false
+```
+
+
+# References
+
+
+
+
+
+
+
